@@ -1,7 +1,15 @@
 import requests
 
 
-def find_cheapest_onion(item_id=8166) -> str:
+def find_cheapest_onion(item_id=8166):
+    """Find five lowest prices for provided item id. If no item id is provided, defaults to 8166 ("Thavnairian Onion").
+
+    Args:
+        item_id (int, optional): Unique id for item of interest. Defaults to 8166.
+
+    Returns:
+        str: ASCII table containing five lowest prices found for item id.
+    """
     url = f'https://universalis.app/api/v2/North-America/{item_id}'
     response = requests.get(url)
 
