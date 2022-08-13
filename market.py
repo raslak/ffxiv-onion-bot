@@ -1,8 +1,8 @@
 import requests
 
 
-def find_cheapest_onion() -> str:
-    url = 'https://universalis.app/api/v2/North-America/8166'
+def find_cheapest_onion(item_id=8166) -> str:
+    url = f'https://universalis.app/api/v2/North-America/{item_id}'
     response = requests.get(url)
 
     data = response.json()
@@ -10,7 +10,7 @@ def find_cheapest_onion() -> str:
     top_five = data['listings'][:5]
 
     results_table = "```\n"
-    results_table += "Top five prices\n"
+    results_table += f"Top five prices for https://universalis.app/market/{item_id}\n"
     results_table += "+---------------+---------------+-----+\n"
     results_table += "| Server        | Price         | Qty |\n"
     results_table += "+---------------+---------------+-----+\n"
