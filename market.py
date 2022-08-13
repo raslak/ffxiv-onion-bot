@@ -1,17 +1,31 @@
 import requests
-from bs4 import BeautifulSoup
 
 
 def find_cheapest_onion() -> str:
-    URL = 'https://universalis.app/market/8166'
-    page = requests.get(URL)
+    url = 'https://universalis.app/api/v2/North-America/8166'
+    response = requests.get(url)
 
-    soup = BeautifulSoup(page.content, 'html.parser')
+    data = response.json()
 
-    try:
-        cheapest_div = soup.find('div', class_='cheapest_price')
-        cheapest_price_info = cheapest_div.find('span', class_='cheapest_price_info').text
-    except Exception as e:
-        cheapest_price_info = 'Unable to find price'
+    top_five = data['listings'][:5]
 
-    return cheapest_price_info
+    results_table = "```\n"
+    results_table += "Top five prices\n"
+    results_table += "+---------------+---------------+-----+\n"
+    results_table += "| Server        | Price         | Qty |\n"
+    results_table += "+---------------+---------------+-----+\n"
+
+    for item in top_five:
+        world = item['worldName']
+        price = str(item['pricePerUnit'])
+        qty = str(item['quantity'])
+
+        results_table += f"| {world}" + " " * (14 - len(world))
+        results_table += f"| {price}" + " " * (14 - len(price))
+        results_table += f"| {qty}" + " " * (4 - len(qty)) + "|"
+        results_table += "\n"
+
+    results_table += "+---------------+---------------+-----+\n"
+    results_table += "```"
+
+    return results_table
