@@ -1,3 +1,4 @@
+import json
 import requests
 
 
@@ -15,18 +16,22 @@ def find_cheapest_onion(item_ids, world_dc_region="North-America"):
     """
     url = f'https://universalis.app/api/v2/{world_dc_region}/{item_ids}'
     response = requests.get(url)
-
     data = response.json()
 
-    top_five = data['listings'][:5]
+    lowest_five = data['listings'][:5]
+    
+    item_id_map = json.load(open('items.json'))
+    item_name = 'Unknown'
+    if str(item_ids) in item_id_map.keys():
+        item_name = item_id_map[str(item_ids)]['en']
 
     results_table = "```\n"
-    results_table += f"Top five prices for https://universalis.app/market/{item_ids}\n"
+    results_table += f"Best prices for {item_name} on {world_dc_region.title()}\n"
     results_table += "+---------------+---------------+-----+\n"
     results_table += "| Server        | Price         | Qty |\n"
     results_table += "+---------------+---------------+-----+\n"
 
-    for item in top_five:
+    for item in lowest_five:
         if 'worldName' in item.keys():
             world = item['worldName']
         else:
@@ -42,5 +47,6 @@ def find_cheapest_onion(item_ids, world_dc_region="North-America"):
 
     results_table += "+---------------+---------------+-----+\n"
     results_table += "```"
+    results_table += f"Source: https://universalis.app/market/{item_ids}"
 
     return results_table
